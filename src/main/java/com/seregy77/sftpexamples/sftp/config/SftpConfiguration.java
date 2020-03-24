@@ -42,13 +42,17 @@ public class SftpConfiguration {
   private String sftpPass;
   @Value("${sftp.filePattern:*.txt}")
   private String sftpFilePattern;
+  @Value("${sftp.remote.directory:upload}")
+  private String sftpRemoteDirectory;
+  @Value("${sftp.local.directory:sftp-inbound}")
+  private String sftpLocalDirectory;
 
   @Value("${sftp.poll.periodMs:5000}")
   private long sftpPollPeriod;
   @Value("${sftp.fetch.maxAmount:1}")
   private int sftpFetchMaxAmount;
-  @Value("${message.que.capacity:5}")
-  private int messageQueCapacity;
+  @Value("${message.queue.capacity:5}")
+  private int messageQueueCapacity;
 
   /**
    * Session factory for creating connections to SFTP server
@@ -76,7 +80,7 @@ public class SftpConfiguration {
   public MessageSource<File> sftpMessageSource() {
     SftpInboundFileSynchronizingMessageSource source =
         new SftpInboundFileSynchronizingMessageSource(sftpInboundFileSynchronizer());
-    source.setLocalDirectory(new File("sftp-inbound"));
+    source.setLocalDirectory(new File(sftpLocalDirectory));
     source.setAutoCreateLocalDirectory(true);
     source.setLocalFilter(new AcceptOnceFileListFilter<>());
     source.setMaxFetchSize(sftpFetchMaxAmount);
@@ -93,7 +97,7 @@ public class SftpConfiguration {
     SftpInboundFileSynchronizer fileSynchronizer = new SftpInboundFileSynchronizer(
         sftpSessionFactory());
     fileSynchronizer.setDeleteRemoteFiles(false);
-    fileSynchronizer.setRemoteDirectory("upload");
+    fileSynchronizer.setRemoteDirectory(sftpRemoteDirectory);
     CompositeFileListFilter<LsEntry> compositeFileListFilter = new CompositeFileListFilter<>(
         Arrays.asList(new SftpPersistentAcceptOnceFileListFilter(jdbcMetadataStore(), "sftp"),
             new SftpSimplePatternFileListFilter(sftpFilePattern)));
@@ -108,7 +112,7 @@ public class SftpConfiguration {
    */
   @Bean
   public PollableChannel sftpChannel() {
-    return new QueueChannel(messageQueCapacity);
+    return new QueueChannel(messageQueueCapacity);
   }
 
   /**
@@ -118,7 +122,7 @@ public class SftpConfiguration {
    */
   @Bean
   public MessageChannel localChannel() {
-    return new QueueChannel(messageQueCapacity);
+    return new QueueChannel(messageQueueCapacity);
   }
 
 
