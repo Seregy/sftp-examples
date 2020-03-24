@@ -4,12 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.Poller;
 import org.springframework.integration.annotation.ServiceActivator;
-import org.springframework.stereotype.Service;
 
 @Slf4j
-@Service
+@MessageEndpoint
 public class SftpMessageHandler {
 
   /**
@@ -29,7 +29,7 @@ public class SftpMessageHandler {
    *
    * @param payload file to remove
    */
-  @ServiceActivator(inputChannel = "localChannel", poller = @Poller())
+  @ServiceActivator(inputChannel = "localChannel")
   public void removeLocalFile(File payload) {
     try {
       Files.delete(payload.toPath());
