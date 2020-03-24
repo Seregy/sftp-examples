@@ -32,7 +32,7 @@ Application can be configured by adjusting the following properties:
 | sftp.password          | Password for connecting to SFTP server                                          | pass          |
 | sftp.filePattern       | Regex pattern for files to download from SFTP server                            | *.txt         |
 | sftp.poll.periodMs     | Polling period of SFTP server in milliseconds                                   | 5000          |
-| sftp.fetch.maxAmount   | Maximal amount of files that can be fetched from SFTP server during one polling | 1             |
+| sftp.fetch.maxAmount   | Maximum amount of files that can be fetched from SFTP server during one polling | 1             |
 | sftp.remote.directory  | Path to remote directory on SFTP server, from which to fetch files              | upload        |
 | sftp.local.directory   | Path to local directory, where the files will be transmitted to                 | sftp-inbound  |
-| message.queue.capacity | Maximal amount of messages that can be present in message queues                | 5             |
+| message.queue.capacity | Maximum amount of messages that can be present in message queues                | 5             |
